@@ -7,10 +7,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 
 class MainActivity : AppCompatActivity() {
@@ -19,10 +17,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navGraph: NavGraph
 
     companion object {
-        private const val SHOULD_LAUNCH_MAIN = "SHOULD_LAUNCH_MAIN"
+        private const val SHOULD_LAUNCH_HOME = "SHOULD_LAUNCH_HOME"
         fun open(context: Context, hasTagsSetup: Boolean) {
             context.startActivity(Intent(context, MainActivity::class.java).apply {
-                putExtra(SHOULD_LAUNCH_MAIN, hasTagsSetup)
+                putExtra(SHOULD_LAUNCH_HOME, hasTagsSetup)
             })
         }
     }
@@ -40,14 +38,13 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(setOf(
                 R.id.navigation_home, R.id.navigation_dashboard))
         val destination = if (intent.getBooleanExtra(
-                        SHOULD_LAUNCH_MAIN,
+                        SHOULD_LAUNCH_HOME,
                         false
                 )
         ) R.id.navigation_home else R.id.navigation_dashboard
 
         navGraph.startDestination = destination
         navController.graph = navGraph
-        setupActionBarWithNavController(navController, appBarConfiguration)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         navView.setupWithNavController(navController)
