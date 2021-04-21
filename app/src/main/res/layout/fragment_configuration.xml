@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c)  2018 - 2021 Daniel Quah
+  ~ Copyright (c)  2021 ASDF Dev Pte. Ltd.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--
+     These nested scroll views are necessary. If a user has a ton of tags, user should be able to
+     scroll to view their tags that are off screen.
+
+     NestedScrollView is nested inside SwipeRefreshLayout because scrolling simply does not work
+     https://stackoverflow.com/questions/25294395/swiperefreshlayout-with-scrollview-and-layout-above
+
+     Keeping SwipeRefreshLayout allows user to refresh the screen and also show the loading circle
+     when loading occurs
+
+     Ideally, ChipGroup should be replaced with RecyclerView however, as of writing(17 Nov 2020),
+     I can't figure out how to add chips into a RecyclerView
+     -->
+
+    <ScrollView
+        android:id="@+id/tags_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/tagsNestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tag_description_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <EditText
+                        android:id="@+id/description_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/description"
+                        android:drawablePadding="12dp"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:inputType="text"
+                        style="@style/Base.V7.Widget.AppCompat.AutoCompleteTextView"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/all_description_tags"
+                    style="@style/Widget.MaterialComponents.ChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    app:layout_constraintTop_toBottomOf="@+id/tag_description_layout"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tag_amount_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintTop_toBottomOf="@+id/all_description_tags"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <EditText
+                        android:id="@+id/amount_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/amount"
+                        android:drawablePadding="12dp"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:inputType="text"
+                        style="@style/Base.V7.Widget.AppCompat.AutoCompleteTextView"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/all_amount_tags"
+                    style="@style/Widget.MaterialComponents.ChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    app:layout_constraintTop_toBottomOf="@+id/tag_amount_layout"
+                    app:layout_constraintStart_toStartOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </ScrollView>
+
+</LinearLayout>

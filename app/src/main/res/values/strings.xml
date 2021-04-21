@@ -117,6 +117,11 @@
     <!-- Strings for segmentation preference. -->
     <string name="pref_title_segmentation_raw_size_mask">Enable raw size mask</string>
     <string name="pref_key_segmentation_raw_size_mask" translatable="false">srsm</string>
+    <string name="amount">amount</string>
+    <string name="description">description</string>
 
+    <string name="delete_tag_title">Delete Tag %1$s</string>
+    <string name="delete_tag_message">Are you sure you want to delete the tag named %1$s ?</string>
+    <string name="delete_permanently">Delete permanently</string>
 
 </resources>
