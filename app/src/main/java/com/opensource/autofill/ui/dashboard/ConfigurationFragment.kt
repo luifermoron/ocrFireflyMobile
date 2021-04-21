@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.opensource.autofill.R
 
-class DashboardFragment : Fragment() {
+class ConfigurationFragment : Fragment() {
 
     private lateinit var dashboardViewModel: DashboardViewModel
 
