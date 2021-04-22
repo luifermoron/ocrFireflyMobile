@@ -2,38 +2,39 @@ package com.opensource.autofill.ui.home
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import com.google.mlkit.common.model.LocalModel
+import androidx.lifecycle.observe
 import com.google.mlkit.vision.demo.kotlin.textdetector.TextRecognitionProcessor
 import com.opensource.autofill.R
+import com.opensource.autofill.ocr.OCRResult
+import com.opensource.autofill.ocr.TagParser
+import com.opensource.autofill.ui.configuration.ConfigurationViewModel
+import com.opensource.autofill.ui.configuration.getViewModelFactory
+import com.opensource.autofill.ui.mlkit.BitmapUtils
 import com.opensource.autofill.ui.mlkit.VisionImageProcessor
 import java.io.IOException
 
-import com.opensource.autofill.ui.mlkit.BitmapUtils
-
-class HomeFragment : Fragment(), View.OnClickListener {
+class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
 
     private var imageUri: Uri? = null
     private lateinit var homeViewModel: HomeViewModel
     private var imageProcessor: VisionImageProcessor? = null
 
+    private val tagViewModel by activityViewModels<ConfigurationViewModel> { getViewModelFactory() }
+
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         homeViewModel =
                 ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -44,7 +45,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun createImageProcessor() {
         try {
-            imageProcessor = TextRecognitionProcessor(requireActivity())
+            imageProcessor = TextRecognitionProcessor(requireActivity(), this)
         } catch (e: Exception) {
         }
     }
@@ -71,7 +72,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
 
-        startActivityForResult(Intent.createChooser(intent, "Select an Image"), REQUEST_CHOOSE_IMAGE)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select an Image"),
+            REQUEST_CHOOSE_IMAGE
+        )
     }
     private fun tryReloadAndDetectInImage() {
         Log.d(TAG, "Try reload and detect image")
@@ -81,7 +85,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 return
             }
 
-            val imageBitmap = BitmapUtils.getBitmapFromContentUri(requireActivity().contentResolver, imageUri)
+            val imageBitmap = BitmapUtils.getBitmapFromContentUri(
+                requireActivity().contentResolver,
+                imageUri
+            )
             if (imageBitmap == null) {
                 Log.d(TAG, "imageBitmap == null")
                 return
@@ -91,7 +98,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 Log.d(TAG, "imageProcessor != null")
                 imageProcessor!!.processBitmap(imageBitmap)
             } else {
-                Log.e(TAG, "Null imageProcessor, please check adb logs for imageProcessor creation error")
+                Log.e(
+                    TAG,
+                    "Null imageProcessor, please check adb logs for imageProcessor creation error"
+                )
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error retrieving saved image")
@@ -116,5 +126,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
         private const val SIZE_640_480 = "w:640" // ~640*480 in a normal ratio
 
         private const val REQUEST_CHOOSE_IMAGE = 1
+    }
+
+    override fun showOCRResult(text: String?) {
+        text?.let { it
+
+            tagViewModel.getAllOCRTags().observe(viewLifecycleOwner) { tags ->
+
+                val tagParser = TagParser()
+                val description: String = tagParser.findTextOn(tagViewModel.descriptionSringList(tags), TagParser.buildGetExactText(it))
+                val amount: String = tagParser.findTextOn(tagViewModel.amountStringList(tags), TagParser.buildGetExactText(it)) //TagParser.buildGetSimilarText(it, "\\d*\\.?\\d+")
+                Log.d("HomeFragment", "heyy")
+                Log.d("HomeFragment", description)
+                Log.d("HomeFragment", amount)
+            }
+        }
     }
 }

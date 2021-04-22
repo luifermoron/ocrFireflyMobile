@@ -23,10 +23,16 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
+import com.opensource.autofill.ocr.OCRResult
 import com.opensource.autofill.ui.mlkit.VisionProcessorBase
+import java.lang.Exception
 
 /** Processor for the text detector demo.  */
-class TextRecognitionProcessor(context: Context) : VisionProcessorBase<Text>(context) {
+class TextRecognitionProcessor(context: Context, _ocrResult: OCRResult) : VisionProcessorBase<Text>(
+  context
+) {
+
+  val ocrResult: OCRResult = _ocrResult
   private val textRecognizer: TextRecognizer = TextRecognition.getClient()
 
   override fun stop() {
@@ -39,33 +45,35 @@ class TextRecognitionProcessor(context: Context) : VisionProcessorBase<Text>(con
   }
 
   override fun onSuccess(text: Text) {
-    Log.d(TAG, "On-device Text detection successful")
     logExtrasForTesting(text)
+  }
+  private fun logExtrasForTesting(text: Text?) {
+    if (text != null) {
+      val SPACE = " "
+      val builder = StringBuilder()
+      for (i in text.textBlocks.indices) {
+        val lines = text.textBlocks[i].lines
+        for (j in lines.indices) {
+          val elements = lines[j].elements
+          for (k in elements.indices) {
+            val element = elements[k]
+            builder.append(SPACE.plus(element.text))
+          }
+        }
+      }
+
+      val longText: String = builder.toString()
+      val cleanWhiteSpaceText = longText.trim().replace("\\s+".toRegex(), " ")
+
+      Log.v(MANUAL_TESTING_LOG, "Final result is:")
+      Log.v(MANUAL_TESTING_LOG, cleanWhiteSpaceText)
+
+      ocrResult.showOCRResult(cleanWhiteSpaceText)
+    }
   }
 
   override fun onFailure(e: Exception) {
-    Log.w(TAG, "Text detection failed.$e")
+    TODO("Not yet implemented")
   }
 
-  companion object {
-    private const val TAG = "TextRecProcessor"
-    private fun logExtrasForTesting(text: Text?) {
-      if (text != null) {
-        val SPACE = " "
-        val builder = StringBuilder()
-        for (i in text.textBlocks.indices) {
-          val lines = text.textBlocks[i].lines
-          for (j in lines.indices) {
-            val elements = lines[j].elements
-            for (k in elements.indices) {
-              val element = elements[k]
-              builder.append(SPACE.plus(element.text))
-            }
-          }
-        }
-        Log.v(MANUAL_TESTING_LOG, "Final result is:")
-        Log.v(MANUAL_TESTING_LOG, builder.toString())
-      }
-    }
-  }
 }

@@ -66,6 +66,7 @@ dependencies {
     implementation "androidx.room:room-ktx:2.2.6"
     testImplementation "androidx.room:room-testing:2.2.6"
 
+    implementation files('libs/java-string-similarity-2.0.0.jar')
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

@@ -63,11 +63,11 @@ class ConfigurationViewModel(application: Application) : AndroidViewModel(applic
         return ocrTagsRepository.filterAmountTags(tags)
     }
 
-    fun descriptionSringList(tags: MutableList<OCRTag>) : List<String> {
-        return filterDescriptionTags(tags).map { it.value_tag }
+    fun descriptionSringList(tags: MutableList<OCRTag>) : List<OCRTag> {
+        return filterDescriptionTags(tags)
     }
 
-    fun amountStringList(tags: MutableList<OCRTag>) : List<String> {
-        return filterAmountTags(tags).map { it.value_tag }
+    fun amountStringList(tags: MutableList<OCRTag>) : List<OCRTag> {
+        return filterAmountTags(tags)
     }
 }
