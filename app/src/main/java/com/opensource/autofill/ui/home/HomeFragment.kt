@@ -22,22 +22,21 @@ import com.opensource.autofill.ui.configuration.getViewModelFactory
 import com.opensource.autofill.ui.mlkit.BitmapUtils
 import com.opensource.autofill.ui.mlkit.VisionImageProcessor
 import java.io.IOException
+import java.util.*
+
 
 class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
 
     private var imageUri: Uri? = null
-    private lateinit var homeViewModel: HomeViewModel
     private var imageProcessor: VisionImageProcessor? = null
 
     private val tagViewModel by activityViewModels<ConfigurationViewModel> { getViewModelFactory() }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         root.findViewById<Button>(R.id.select_button).setOnClickListener(this)
         return root
@@ -73,8 +72,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
         intent.action = Intent.ACTION_GET_CONTENT
 
         startActivityForResult(
-            Intent.createChooser(intent, "Select an Image"),
-            REQUEST_CHOOSE_IMAGE
+                Intent.createChooser(intent, "Select an Image"),
+                REQUEST_CHOOSE_IMAGE
         )
     }
     private fun tryReloadAndDetectInImage() {
@@ -86,8 +85,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
             }
 
             val imageBitmap = BitmapUtils.getBitmapFromContentUri(
-                requireActivity().contentResolver,
-                imageUri
+                    requireActivity().contentResolver,
+                    imageUri
             )
             if (imageBitmap == null) {
                 Log.d(TAG, "imageBitmap == null")
@@ -99,8 +98,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
                 imageProcessor!!.processBitmap(imageBitmap)
             } else {
                 Log.e(
-                    TAG,
-                    "Null imageProcessor, please check adb logs for imageProcessor creation error"
+                        TAG,
+                        "Null imageProcessor, please check adb logs for imageProcessor creation error"
                 )
             }
         } catch (e: IOException) {
@@ -130,16 +129,57 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
 
     override fun showOCRResult(text: String?) {
         text?.let { it
-
             tagViewModel.getAllOCRTags().observe(viewLifecycleOwner) { tags ->
-
                 val tagParser = TagParser()
                 val description: String = tagParser.findTextOn(tagViewModel.descriptionSringList(tags), TagParser.buildGetExactText(it))
                 val amount: String = tagParser.findTextOn(tagViewModel.amountStringList(tags), TagParser.buildGetExactText(it)) //TagParser.buildGetSimilarText(it, "\\d*\\.?\\d+")
                 Log.d("HomeFragment", "heyy")
                 Log.d("HomeFragment", description)
                 Log.d("HomeFragment", amount)
+                openOtherApp(description, amount)
             }
         }
+    }
+
+    fun getShareIntent(activity: Activity, type: String?): Intent? {
+        var found = false
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+
+        // gets the list of intents that can be loaded.
+        val resInfo = activity.packageManager.queryIntentActivities(share, 0)
+        println("resinfo: $resInfo")
+        if (!resInfo.isEmpty()) {
+            for (info in resInfo) {
+                if (info.activityInfo.packageName.toLowerCase().contains(type!!) ||
+                        info.activityInfo.name.toLowerCase().contains(type)) {
+                    share.setPackage(info.activityInfo.packageName)
+                    found = true
+                    break
+                }
+            }
+            return if (!found) null else share
+        }
+        return null
+    }
+
+    private fun openOtherApp(description: String, amount: String) {
+
+        val targetedShareIntents: ArrayList<Intent?> = ArrayList()
+        val fireflyIntent: Intent? = getShareIntent(requireActivity(), "xyz.hisname.fireflyiii")
+
+        if (fireflyIntent != null) targetedShareIntents.add(fireflyIntent)
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra("description", description)
+            putExtra("amount", amount)
+            putExtra(Intent.EXTRA_CHOOSER_TARGETS, arrayOf<Intent>());
+            putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray());
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 }

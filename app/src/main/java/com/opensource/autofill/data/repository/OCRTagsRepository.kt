@@ -34,6 +34,6 @@ class OCRTagsRepository(private val ocrTagDao: OCRTagDao) {
 
     companion object {
         @JvmStatic val AMOUNT_MAX_WORD_QUANTITY = 1
-        @JvmStatic val DESCRIPTION_MAX_WORD_QUANTITY = 10
+        @JvmStatic val DESCRIPTION_MAX_WORD_QUANTITY = 5
     }
 }
