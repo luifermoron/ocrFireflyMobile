@@ -14,11 +14,6 @@ import kotlinx.coroutines.launch
 class ConfigurationViewModel(application: Application) : AndroidViewModel(application){
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
-    }
-    val text: LiveData<String> = _text
-
     private val ocrTagsRepository = OCRTagsRepository(
         AutofillDatabase.buildDatabase(application).ocrTagDataDao()
     )
@@ -35,18 +30,18 @@ class ConfigurationViewModel(application: Application) : AndroidViewModel(applic
         isLoading.postValue(false)
     }
 
-    fun insertAmountTag(value: String) {
+    fun insertAmountTag(value: String, wordQuantities: Int) {
         isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            ocrTagsRepository.insertAmountTag(value)
+            ocrTagsRepository.insertAmountTag(value, wordQuantities)
             isLoading.postValue(false)
         }
     }
 
-    fun insertDescriptionTag(value: String) {
+    fun insertDescriptionTag(value: String, wordQuantities: Int) {
         isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            ocrTagsRepository.insertDescriptionTag(value)
+            ocrTagsRepository.insertDescriptionTag(value, wordQuantities)
             isLoading.postValue(false)
         }
     }

@@ -4,14 +4,19 @@ import androidx.fragment.app.activityViewModels
 
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -22,10 +27,11 @@ import com.google.android.material.chip.ChipGroup
 import com.opensource.autofill.R
 import com.opensource.autofill.databinding.FragmentConfigurationBinding
 import com.opensource.autofill.model.ocr.OCRTag
+import com.opensource.autofill.ui.AboutActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ConfigurationFragment : Fragment() {
+class ConfigurationFragment : Fragment(), View.OnClickListener {
 
     private val tagViewModel by activityViewModels<ConfigurationViewModel> { getViewModelFactory() }
     private var fragmentListTagsBinding: FragmentConfigurationBinding? = null
@@ -34,6 +40,9 @@ class ConfigurationFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         fragmentListTagsBinding = FragmentConfigurationBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        view.findViewById<ImageView>(R.id.about_page).setOnClickListener(this)
+
         return view
     }
 
@@ -51,9 +60,7 @@ class ConfigurationFragment : Fragment() {
         {  v: TextView, actionId: Int,  event: KeyEvent? ->
             var handled : Boolean = false
             if (wasEnterPressed(actionId, event)) {
-                val description: String = popText(binding.descriptionEdittext)
-                tagViewModel.insertDescriptionTag(description)
-
+                askForWordQuantities(true, binding.descriptionEdittext)
                 handled = true
             }
             handled
@@ -63,9 +70,7 @@ class ConfigurationFragment : Fragment() {
         {  v: TextView, actionId: Int,  event: KeyEvent? ->
             var handled : Boolean = false
             if (wasEnterPressed(actionId, event)) {
-                val amount: String = popText(binding.amountEdittext)
-                tagViewModel.insertAmountTag(amount)
-
+                askForWordQuantities(false, binding.amountEdittext)
                 handled = true
             }
             handled
@@ -78,9 +83,31 @@ class ConfigurationFragment : Fragment() {
         return textContent
     }
 
-    private fun wasEnterPressed(actionId: Int,  event: KeyEvent?) : Boolean {
-        Log.d("OCRFRAGMENT", actionId.toString());
+    fun askForWordQuantities(isDescriptionField: Boolean, editText: EditText){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle(R.string.configuration_words_dialog_title)
 
+        val input = EditText(requireActivity())
+
+        input.setHint(R.string.configuration_words_dialog_hint)
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        builder.setView(input)
+
+        builder.setPositiveButton(R.string.configuration_words_dialog_yes, DialogInterface.OnClickListener { dialog, which ->
+            var wordQuantity: Int = Integer.parseInt(input.text.toString())
+            val text: String = popText(editText)
+            if(isDescriptionField)
+                tagViewModel.insertDescriptionTag(text, wordQuantity)
+            else
+                tagViewModel.insertAmountTag(text, wordQuantity)
+        })
+
+        builder.setNegativeButton(R.string.configuration_words_dialog_no, DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+
+        builder.show()
+    }
+
+    private fun wasEnterPressed(actionId: Int,  event: KeyEvent?) : Boolean {
         return (actionId == EditorInfo.IME_ACTION_DONE
                 || event?.action == KeyEvent.ACTION_DOWN
                 || event?.action == KeyEvent.KEYCODE_ENTER)
@@ -92,9 +119,10 @@ class ConfigurationFragment : Fragment() {
 
             binding.allDescriptionTags.removeAllViewsInLayout()
             binding.allAmountTags.removeAllViewsInLayout()
-            if(tags.isEmpty()){
-
+            if (tags.isEmpty()) {
+                binding.configurationGuide.setText(R.string.configuration_guide)
             } else {
+                binding.configurationGuide.setText(R.string.configuration_page)
                 replaceListOn(tagViewModel.filterDescriptionTags(tags), binding.allDescriptionTags)
                 replaceListOn(tagViewModel.filterAmountTags(tags), binding.allAmountTags)
             }
@@ -132,8 +160,14 @@ class ConfigurationFragment : Fragment() {
             .show()
     }
 
-    override fun onAttach(context: Context){
-        super.onAttach(context)
-        //requireActivity().findViewById<Toolbar>(R.id.activity_toolbar).title = resources.getString(R.string.tags)
+    override fun onClick(v: View?) {
+        v?.let {
+            val id: Int = it.id
+            when (id) {
+                R.id.about_page -> {
+                    startActivity(Intent(requireActivity(), AboutActivity::class.java))
+                }
+            }
+        }
     }
 }

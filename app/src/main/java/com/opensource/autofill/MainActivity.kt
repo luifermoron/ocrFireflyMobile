@@ -3,6 +3,7 @@ package com.opensource.autofill
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -10,6 +11,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.opensource.autofill.ui.AboutActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,9 +20,10 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val SHOULD_LAUNCH_HOME = "SHOULD_LAUNCH_HOME"
-        fun open(context: Context, hasTagsSetup: Boolean) {
+        fun open(context: Context, hasTagsSetup: Boolean, imageUri: String?) {
             context.startActivity(Intent(context, MainActivity::class.java).apply {
                 putExtra(SHOULD_LAUNCH_HOME, hasTagsSetup)
+                putExtra("imageUri", imageUri)
             })
         }
     }
