@@ -70,9 +70,11 @@ Some apps/tools/resources which this app is using:
 
 ## Contributing ##
 
-Everything is welcome. Send me an email(Check it on my Github Profile).
+Everything is welcome. [Contact me](https://github.com/luifermoron).
 
-In addition, if this app was helpful for you, consider making a donation(TODO).
+In addition, if this app was helpful for you, consider:
+
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="luifermoron" data-color="#5F7FFF" data-emoji="" data-font="Cookie" data-text="Buy me a Cuñape" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
 
 
 ## License ##
