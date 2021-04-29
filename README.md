@@ -1,8 +1,3 @@
-<div align="center" id="top"> 
-  <img src="./.github/app.gif" alt="OcrFireflyMobile" />
-
-  &#xa0;
-</div>
 
 <h1 align="center">OCR Firefly Mobile</h1>
 
