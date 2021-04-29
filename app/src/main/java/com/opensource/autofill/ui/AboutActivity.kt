@@ -21,10 +21,12 @@ class AboutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_about)
 
         val FIREFLY_APP = "https://github.com/emansih/FireflyMobile"
+        val OCR_FIREFLY_APP = "https://github.com/luifermoron/ocrFireflyMobile"
         val FIREFLY_SERVER = "https://github.com/firefly-iii/firefly-iii"
         val PERSONAL_GITHUB= "https://github.com/luifermoron"
 
-        makeTextLink(findViewById(R.id.autofill_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_APP))) })
+        makeTextLink(findViewById(R.id.autofill_description), "Firefly App", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_APP))) })
+        makeTextLink(findViewById(R.id.autofill_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(OCR_FIREFLY_APP))) })
         makeTextLink(findViewById(R.id.firefly_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_SERVER))) })
         makeTextLink(findViewById(R.id.author_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PERSONAL_GITHUB))) })
     }
