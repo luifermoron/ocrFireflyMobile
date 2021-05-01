@@ -654,3 +654,7 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,visualstudio,visualstudiocode,java,kotlin,gradle
 
+### VisualStudio Patch ###
+
+app/release/
+fastlane/
