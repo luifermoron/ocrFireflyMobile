@@ -1,6 +1,7 @@
 package com.opensource.autofill.ui
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -19,14 +20,17 @@ class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+        supportActionBar?.hide()
 
         val FIREFLY_APP = "https://github.com/emansih/FireflyMobile"
         val FIREFLY_SERVER = "https://github.com/firefly-iii/firefly-iii"
         val PERSONAL_GITHUB= "https://github.com/luifermoron"
+        val mode = resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        val color = if (mode == Configuration.UI_MODE_NIGHT_YES) R.color.white else R.color.color_one
 
-        makeTextLink(findViewById(R.id.autofill_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_APP))) })
-        makeTextLink(findViewById(R.id.firefly_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_SERVER))) })
-        makeTextLink(findViewById(R.id.author_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PERSONAL_GITHUB))) })
+        makeTextLink(findViewById(R.id.autofill_description), "More.", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_APP))) })
+        makeTextLink(findViewById(R.id.firefly_description), "More.", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_SERVER))) })
+        makeTextLink(findViewById(R.id.author_description), "More.", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PERSONAL_GITHUB))) })
     }
 
 

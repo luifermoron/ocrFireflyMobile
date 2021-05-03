@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.AutoFillFireflyMobile" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
+
         <item name="colorPrimary">@color/color_one</item>
         <item name="colorPrimaryVariant">@color/color_two</item>
         <item name="colorOnPrimary">@color/color_three</item>
@@ -9,9 +10,10 @@
         <item name="colorSecondary">@color/color_four</item>
         <item name="colorSecondaryVariant">@color/color_five</item>
         <item name="colorOnSecondary">@color/color_six</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
         <!-- Customize your theme here. -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>   <!-- //this -->
     </style>
 
 
