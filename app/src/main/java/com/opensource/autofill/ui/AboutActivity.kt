@@ -44,10 +44,10 @@ class AboutActivity : AppCompatActivity() {
         val mode = resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         val color = if (mode == Configuration.UI_MODE_NIGHT_YES) R.color.white else R.color.color_one
 
-        makeTextLink(findViewById(R.id.autofill_description), "Firefly App", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_APP))) })
-        makeTextLink(findViewById(R.id.autofill_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(OCR_FIREFLY_APP))) })
-        makeTextLink(findViewById(R.id.firefly_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_SERVER))) })
-        makeTextLink(findViewById(R.id.author_description), "More.", true, R.color.color_one, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PERSONAL_GITHUB))) })
+        makeTextLink(findViewById(R.id.autofill_description), "Firefly App", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_APP))) })
+        makeTextLink(findViewById(R.id.autofill_description), "More.", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(OCR_FIREFLY_APP))) })
+        makeTextLink(findViewById(R.id.firefly_description), "More.", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(FIREFLY_SERVER))) })
+        makeTextLink(findViewById(R.id.author_description), "More.", true, color, action = { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PERSONAL_GITHUB))) })
     }
 
 
