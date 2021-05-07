@@ -33,6 +33,7 @@ class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+        supportActionBar?.hide()
 
         val tagViewModel: ConfigurationViewModel by viewModels()
         tagViewModel.getAllOCRTags().observe(this, Observer<List<OCRTag>> { tags ->

@@ -22,8 +22,17 @@ public abstract class BaseGetText {
 
     protected String rawText;
 
+    private void cleanRawText() {
+        this.rawText = rawText.trim().replace("\\s+", " ");
+    }
+
     public BaseGetText(String rawText) {
         this.rawText = rawText;
+        cleanRawText();
+    }
+
+    public String getRawText() {
+        return rawText;
     }
 
     public abstract String getText(OCRTag tag);

@@ -18,4 +18,7 @@
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+#-renamesourcefileattribute SourceFil
+e
+-dontwarn com.airbnb.lottie.**
+-keep class com.airbnb.lottie.** {*;}

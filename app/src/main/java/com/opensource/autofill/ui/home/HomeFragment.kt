@@ -95,7 +95,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
     override fun onResume() {
         super.onResume()
 
-        hasAppFireflyInstalled = getShareIntent(requireActivity(), FIREFLY_PACKAGE) != null
+        hasAppFireflyInstalled = /*getShareIntent(requireActivity(), FIREFLY_PACKAGE) != null*/ true
         if (hasAppFireflyInstalled) {
             binding.textHome.setText(R.string.home_app_installed_description)
             binding.selectButton.setText(R.string.select_image)
@@ -194,6 +194,13 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
 
                 if (description == "" && amount == "") {
                     Toast.makeText(requireActivity().applicationContext, "Could not find anything", Toast.LENGTH_LONG).show()
+                    GlobalScope.launch {
+                        delay(1000L)
+                        launch(Dispatchers.Main) {
+                            binding.animationView.pauseAnimation()
+                            binding.animationView.progress = 0.0f
+                        }
+                    }
                 } else {
                     GlobalScope.launch {
                         delay(1000L)

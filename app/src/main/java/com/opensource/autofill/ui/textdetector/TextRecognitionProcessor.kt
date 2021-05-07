@@ -49,7 +49,7 @@ class TextRecognitionProcessor(context: Context, _ocrResult: OCRResult) : Vision
   }
   private fun logExtrasForTesting(text: Text?) {
     if (text != null) {
-      val SPACE = " "
+      val SPACE = "   "
       val builder = StringBuilder()
       for (i in text.textBlocks.indices) {
         val lines = text.textBlocks[i].lines
@@ -63,12 +63,12 @@ class TextRecognitionProcessor(context: Context, _ocrResult: OCRResult) : Vision
       }
 
       val longText: String = builder.toString()
-      val cleanWhiteSpaceText = longText.trim().replace("\\s+".toRegex(), " ")
+      //val cleanWhiteSpaceText = longText.trim().replace("\\s+".toRegex(), " ")
 
       Log.v(MANUAL_TESTING_LOG, "Final result is:")
-      Log.v(MANUAL_TESTING_LOG, cleanWhiteSpaceText)
+      Log.v(MANUAL_TESTING_LOG, longText)
 
-      ocrResult.showOCRResult(cleanWhiteSpaceText)
+      ocrResult.showOCRResult(longText)
     }
   }
 
