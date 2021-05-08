@@ -32,7 +32,8 @@ This is app will help you to automate your [Firefly App](https://github.com/eman
 
 ## Download ##
 
-TODO
+[<img alt="Get it on Google Play"
+      height="80">](https://play.google.com/store/apps/details?id=com.opensource.autofill)
 
 ## How to use ##
 
