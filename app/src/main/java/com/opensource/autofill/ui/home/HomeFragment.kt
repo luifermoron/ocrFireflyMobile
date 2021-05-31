@@ -17,6 +17,7 @@ package com.opensource.autofill.ui.home
 */
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -94,8 +95,9 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
 
     override fun onResume() {
         super.onResume()
-
-        hasAppFireflyInstalled = /*getShareIntent(requireActivity(), FIREFLY_PACKAGE) != null*/ true
+        val fireflyIntent = Intent()
+        fireflyIntent.action = "firefly.hisname.PREFILL_TRANSACTION"
+        hasAppFireflyInstalled = isInstalled(fireflyIntent)
         if (hasAppFireflyInstalled) {
             binding.textHome.setText(R.string.home_app_installed_description)
             binding.selectButton.setText(R.string.select_image)
@@ -103,6 +105,11 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
             binding.textHome.setText(R.string.home_app_not_installed_description)
             binding.selectButton.setText(R.string.download_app)
         }
+    }
+
+    private fun isInstalled(intent: Intent): Boolean {
+        val list = requireActivity().packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        return list.size > 0
     }
 
     override fun onClick(v: View?) {
@@ -215,50 +222,18 @@ class HomeFragment : Fragment(), View.OnClickListener, OCRResult {
         }
     }
     private fun openFireflyApp(description: String, amount: String) {
-        
-        val targetedShareIntents: ArrayList<Intent?> = ArrayList()
-        val fireflyIntent: Intent? = getShareIntent(requireActivity(), FIREFLY_PACKAGE)
-
-        if (fireflyIntent != null) targetedShareIntents.add(fireflyIntent)
-
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
+        val fireflyIntent = Intent()
+        fireflyIntent.action = "firefly.hisname.PREFILL_TRANSACTION"
+        fireflyIntent.apply {
             putExtra("description", description)
             putExtra("amount", amount)
-            putExtra(Intent.EXTRA_CHOOSER_TARGETS, arrayOf<Intent>());
-            putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray());
-            type = "text/plain"
+            putExtra("transactionType", "withdrawal")
         }
-
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        startActivity(shareIntent)
-    }
-
-    private fun getShareIntent(activity: Activity, type: String?): Intent? {
-        var found = false
-        val share = Intent(Intent.ACTION_SEND)
-        share.type = "text/plain"
-
-        // gets the list of intents that can be loaded.
-        val resInfo = activity.packageManager.queryIntentActivities(share, 0)
-        println("resinfo: $resInfo")
-        if (!resInfo.isEmpty()) {
-            for (info in resInfo) {
-                if (info.activityInfo.packageName.toLowerCase().contains(type!!) ||
-                        info.activityInfo.name.toLowerCase().contains(type)) {
-                    share.setPackage(info.activityInfo.packageName)
-                    found = true
-                    break
-                }
-            }
-            return if (!found) null else share
-        }
-        return null
+        startActivity(fireflyIntent)
     }
 
     companion object {
         private const val TAG = "HomeFragment"
-        val FIREFLY_PACKAGE = "xyz.hisname.fireflyiii"
 
         private const val REQUEST_CHOOSE_IMAGE = 1
     }
